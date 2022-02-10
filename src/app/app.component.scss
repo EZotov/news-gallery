@@ -1,0 +1,39 @@
+.mainHeader, .mainFooter {
+  background: #2f2f2f;
+  color: #ffffff;
+}
+
+.headlineContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .headline {
+    margin: 0 50px;
+    padding: 20px 0;
+    width: 300px;
+    text-align: center;
+
+  }
+  .headlineContainer__leftFigure {
+    width: 40%;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 10px;
+  }
+  .headlineContainer__rightFigure {
+    width: 40%;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 10px;
+
+  }
+}
+
+.mainContainer {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.mainFooter {
+  min-height: 60px;
+}

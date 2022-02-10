@@ -1,0 +1,19 @@
+<div class="newsContainer">
+  <div class="searchContainer">
+    <input  id="filter" class="searchContainer__inputSearch" type="text" (keyup)="onKeyBoardPress($event, searchText)" placeholder="Нажмите Enter для поиска" [(ngModel)]="searchText"/>
+  </div>
+  <ul class="newsList">
+    <li *ngFor="let new of news" class="newsListItem">
+      <a class="newsListItemLink" [routerLink]="['new', new.id]" (click)="onRoutingToNewsItem()">
+        <h2 class="newsListItem__headline">{{new.headline}}</h2>
+        <span class="newsListItem__author">Автор : {{new.author}}</span>
+        <div class="asideInfo">
+          <span class="asideInfo__rate">Рейтинг : {{new.rate}} / {{maxRate}}</span>
+          <span class="asideInfo__date">{{new.date}}</span>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <button class="newsContainer__moreBtn" *ngIf="moreBtnEnable" (click)="moreNews(10)">Загрузить ещё...</button>
+  <router-outlet></router-outlet>
+</div>
