@@ -50,5 +50,4 @@ export class New implements NewPropsCheck {
     this.rate = rate;
     this.dateTimeStamp = dateTimeStamp;
   }
-
 }

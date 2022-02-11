@@ -1,6 +1,6 @@
 <div class="newsContainer">
   <div class="searchContainer">
-    <input  id="filter" class="searchContainer__inputSearch" type="text" (keyup)="onKeyBoardPress($event, searchText)" placeholder="Нажмите Enter для поиска" [(ngModel)]="searchText"/>
+    <input  id="filter" class="searchContainer__inputSearch" type="text" (keyup)="onKeyBoardPress($event, searchText)" [placeholder]="inputPlaceholder" [(ngModel)]="searchText"/>
   </div>
   <ul class="newsList">
     <li *ngFor="let new of news" class="newsListItem">

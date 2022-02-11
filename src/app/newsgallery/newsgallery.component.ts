@@ -20,7 +20,7 @@ export class NewsGallery implements OnInit {
   moreBtnEnable : boolean = true;
   searchText : string = '';
   maxRate : number = 5;
-
+  inputPlaceholder : string = 'Нажмите Enter для поиска';
   //Router
   router : Router;
 
@@ -50,10 +50,12 @@ export class NewsGallery implements OnInit {
         this.news = [...filteredNews];
         this.moreBtnEnable = false;
         this.searchText = '';
+        this.inputPlaceholder = 'Нажмите Enter для возврата';
       }
       else {
         this.news = this.galleryData.getInitialData();
         this.moreBtnEnable = true;
+        this.inputPlaceholder = 'Нажмите Enter для поиска'
       }
     }
   }
