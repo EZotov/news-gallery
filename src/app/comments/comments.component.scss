@@ -15,10 +15,14 @@
     padding: 0;
     width: 300px;
     padding: 10px 10px 10px 0;
+    overflow-y: auto;
     .commentsListItem {
       margin-bottom: 20px;
       border-bottom: 1px solid #3d3d3d;
       padding: 10px 0;
+    }
+    .commentsListItem:last-child {
+      margin-bottom: 0;
     }
   }
   .commentsListContainer__placeholder {
@@ -32,7 +36,7 @@
     flex-basis: 300px;
     font-size: 14px;
     font-weight: bold;
-    color: #3d3d3d;
+    color: #1f4c5d;
     margin-bottom: 10px;
   }
 
