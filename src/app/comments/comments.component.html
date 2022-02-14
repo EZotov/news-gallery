@@ -1,0 +1,13 @@
+<div class="commentsListContainer">
+  <h2 class="commentsListContainer__headline">Комментарии</h2>
+  <ul *ngIf="currentNew.commentsList.length" class="commentsList">
+    <li class="commentsListItem" *ngFor="let comment of currentNew.commentsList">
+      <div class="commentInfo">
+        <span class="commentInfo__username">{{comment.username}}</span>
+        <span class="ccommentInfo__date">{{comment.date}}</span>
+      </div>
+      <p class="commentsListItem__message">{{comment.message}}</p>
+    </li>
+  </ul>
+  <span *ngIf="!currentNew.commentsList.length" class="commentsListContainer__placeholder">Нет комментариев</span>
+</div>

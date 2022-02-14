@@ -12,25 +12,20 @@ import { Router } from '@angular/router';
 )
 
 export class NewsGallery implements OnInit {
-  //Service
-  galleryData : NewsGalleryService;
-
   //Properties
   news : New[] = [];
   moreBtnEnable : boolean = true;
   searchText : string = '';
   maxRate : number = 5;
   inputPlaceholder : string = 'Нажмите Enter для поиска';
-  //Router
-  router : Router;
 
-  constructor(data : NewsGalleryService, router : Router) {
-    this.galleryData = data;
-    this.router = router;
+  constructor(
+    private galleryData : NewsGalleryService,
+    private router : Router) {
   }
 
   ngOnInit() : void {
-    if (this.galleryData.newsListFull.length == 0) {
+    if (!this.galleryData.newsListFull.length) {
       this.galleryData.getData()
         .then(() => {
           this.news = this.galleryData.getInitialData();
@@ -39,7 +34,6 @@ export class NewsGallery implements OnInit {
     else {
       this.news = this.galleryData.getInitialData();
     }
-
   }
 
   onKeyBoardPress(event : KeyboardEvent, text : string) : void {
@@ -60,25 +54,6 @@ export class NewsGallery implements OnInit {
     }
   }
 
-  onRoutingToNewsItem() : void {
-    //Disable Scroll
-    const bodyElem : any = document.querySelector('BODY');
-    let pagePosition = window.scrollY;
-		bodyElem.classList.add('disable-scroll');
-		bodyElem.dataset.position = pagePosition;
-		bodyElem.style.top = -pagePosition + 'px';
-  }
-
-  // onChangeSearchText (text : string) : void {
-  //   if (this.searchText !== '') {
-  //     let filteredNews = this.galleryData.newsListFull.filter(newItem => newItem.headline.includes(text) ||  newItem.date.includes(text));
-  //     this.news = [...filteredNews];
-  //   }
-  //   else {
-  //     this.news = this.galleryData.getInitialData();
-  //   }
-  // }
-
   moreNews(value : number) : void {
     let additionalNews : New[] = this.galleryData.loadMoreData(value);
 
@@ -88,7 +63,7 @@ export class NewsGallery implements OnInit {
       });
     }
 
-    if (this.news.length == this.galleryData.newsListFull.length) {
+    if (this.news.length === this.galleryData.newsListFull.length) {
       this.moreBtnEnable = false;
     }
     else {

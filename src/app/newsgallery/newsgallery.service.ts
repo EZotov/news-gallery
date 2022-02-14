@@ -1,23 +1,24 @@
 import { New } from '../enteties/new';
+import { Comment } from '../enteties/comment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 
 @Injectable()
 export class NewsGalleryService {
-  http : HttpClient;
   newsListFull : New[] = [];
   startIndex : number = 0;
 
 
-  constructor(http : HttpClient) {
-    this.http = http;
+  constructor(
+    private http : HttpClient) {
   }
 
   getData() : Promise<String> {
     return new Promise ((resolve) => {
       let newsTempArray : {[k : string] : any};
       let nextId : number;
+      let commentsList : Comment[] = [];
 
       this.http.get('assets/data.json').
         subscribe(
@@ -25,9 +26,21 @@ export class NewsGalleryService {
             newsTempArray = data;
             newsTempArray['value'].forEach((newsItem : any) => {
               nextId = this.newsListFull.length + 1;
-              this.newsListFull.push(new New(nextId, newsItem['name'], newsItem['author'], newsItem['description'], newsItem['rate'], newsItem['date']));
+              //Create Comments
+              if (newsItem.comments) {
+                if (newsItem.comments.length) {
+                  newsItem.comments.forEach((comment : any) => {
+                    commentsList.push(new Comment(comment.username, comment.message, comment.date));
+                  });
+                }
+              }
+              this.sortData(commentsList, 'asc');
+              //Create New
+              this.newsListFull.push(new New(nextId, newsItem.name, newsItem.author, newsItem.description, newsItem.rate, newsItem.date, commentsList));
+              //Clear CommentsArray
+              commentsList = [];
             });
-            this.sortData(this.newsListFull);
+            this.sortData(this.newsListFull, 'desc');
             resolve('Done');
           }
         );
@@ -36,42 +49,39 @@ export class NewsGalleryService {
 
   getInitialData() : New[] {
     let initialNewsList : New[] = [];
-    for (let i : number = 0; i < this.newsListFull.length; i++) {
+
+    this.newsListFull.forEach((newItem, i) => {
       if (i < 20 && this.newsListFull.length >= 20) {
         initialNewsList.push(this.newsListFull[i]);
       }
       else {
-        break;
+        return;
       }
-    };
+    });
     this.startIndex = 20;
     return initialNewsList;
   }
 
-  sortData(array : New[]) : void {
-    array.sort((a,b)  => {
-      return Date.parse(b.dateTimeStamp) - Date.parse(a.dateTimeStamp);
-    });
+  sortData(array : any[], type : string) : void {
+    if (type === 'desc') {
+      array.sort((a : any,b : any)  => {
+        return Date.parse(b.dateTimeStamp) - Date.parse(a.dateTimeStamp);
+      });
+    }
+    else if (type === 'asc') {
+      array.sort((a : any,b : any)  => {
+        return Date.parse(a.dateTimeStamp) - Date.parse(b.dateTimeStamp);
+      });
+    }
   }
 
   loadMoreData(value : number) : New[] {
     let newsItems : New[] = [];
 
-    if (this.startIndex !== this.newsListFull.length) {
-      for (let i : number = this.startIndex; i < this.startIndex + value; i++) {
-        newsItems.push(this.newsListFull[i]);
-      }
-      this.startIndex+=value;
+    for (let i : number = this.startIndex; i < this.startIndex + value; i++) {
+      newsItems.push(this.newsListFull[i]);
     }
-    else {
-      alert('Больше нет новостей.');
-    }
+    this.startIndex+=value;
     return newsItems;
-  }
-
-  getCurrentNew() : New {
-
-
-    return this.newsListFull[0];
   }
 }

@@ -4,7 +4,7 @@
   </div>
   <ul class="newsList">
     <li *ngFor="let new of news" class="newsListItem">
-      <a class="newsListItemLink" [routerLink]="['new', new.id]" (click)="onRoutingToNewsItem()">
+      <a class="newsListItemLink" [routerLink]="['new', new.id]">
         <h2 class="newsListItem__headline">{{new.headline}}</h2>
         <span class="newsListItem__author">Автор : {{new.author}}</span>
         <div class="asideInfo">

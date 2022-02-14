@@ -10,15 +10,19 @@
   .viewNewContainer {
     position: absolute;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    max-width: 600px;
+    flex-direction: row;
     top: 50%;
     left: 50%;
     min-height: 400px;
     transform: translate(-50%, -50%);
     background: #e7e7e7;
     padding: 20px;
+    .newInfoContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      max-width: 600px;
+    }
   }
   .modalViewNew__link {
     display: block;

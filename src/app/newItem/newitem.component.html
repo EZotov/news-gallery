@@ -1,14 +1,17 @@
 <div class="modalViewNew">
-  <div class="viewNewContainer">
-    <a class="modalViewNew__link" routerLink="" (click)="onRoutingToMain()" >Назад к списку новостей</a>
-    <h2 class="viewNewContainer__headline">{{currentNew.headline}}</h2>
-    <div class="viewNewDescriptionContainer">
-      <span class="viewNewContainer__placeholder" *ngIf="!currentNew.description">Описание отсутствует</span>
-      <p class="viewNewContainer__description" *ngIf="currentNew.description">{{currentNew.description}}</p>
+  <div *ngIf="currentNew" class="viewNewContainer">
+    <a class="modalViewNew__link" routerLink="">Назад к списку новостей</a>
+    <div class="newInfoContainer">
+      <h2 class="viewNewContainer__headline">{{currentNew.headline}}</h2>
+      <div class="viewNewDescriptionContainer">
+        <span class="viewNewContainer__placeholder" *ngIf="!currentNew.description">Описание отсутствует</span>
+        <p class="viewNewContainer__description" *ngIf="currentNew.description">{{currentNew.description}}</p>
+      </div>
+      <div class="viewNewAdvanceInfo">
+        <span class="viewNewContainer__author">{{currentNew.author}}</span>
+        <span class="viewNewContainer__date">{{currentNew.date}}</span>
+      </div>
     </div>
-    <div class="viewNewAdvanceInfo">
-      <span class="viewNewContainer__author">{{currentNew.author}}</span>
-      <span class="viewNewContainer__date">{{currentNew.date}}</span>
-    </div>
+    <commentsList [currentNew]="currentNew"></commentsList>
   </div>
 </div>

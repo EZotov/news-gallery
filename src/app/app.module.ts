@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { NewsGallery } from './newsgallery/newsgallery.component';
 import { NewsGalleryService } from './newsgallery/newsgallery.service';
 import { NewItem } from './newItem/newItem.component';
+import { CommentsList } from './comments/comments.component';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     NewsGallery,
-    NewItem
+    NewItem,
+    CommentsList
   ],
   imports: [
     BrowserModule,
