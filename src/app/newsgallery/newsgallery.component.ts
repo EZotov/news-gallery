@@ -1,7 +1,12 @@
-import { Component, OnInit, Input} from '@angular/core';
-import { NewsGalleryService } from './newsgallery.service';
+import { Component, OnInit} from '@angular/core';
 import { New } from '../enteties/new';
-import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
+import { Store } from '@ngrx/store';
+import { newsSelector } from '../store/newsgallery.selectors';
+import { loadNews } from '../store/newsgallery.actions';
+import { NewsGalleryService } from './newsgallery.service';
+
 
 @Component(
   {
@@ -13,61 +18,78 @@ import { Router } from '@angular/router';
 
 export class NewsGallery implements OnInit {
   //Properties
-  news : New[] = [];
+  viewNews : New[] = [];
+  allnews$ : Observable<New[]> = this.store.select(newsSelector);
   moreBtnEnable : boolean = true;
   searchText : string = '';
   maxRate : number = 5;
   inputPlaceholder : string = 'Нажмите Enter для поиска';
+  startIndex : number = 0;
+  allNewsCount : number = 0;
 
   constructor(
-    private galleryData : NewsGalleryService,
-    private router : Router) {
-  }
+    private store : Store,
+    private gallaryData : NewsGalleryService
+  ) { }
 
   ngOnInit() : void {
-    if (!this.galleryData.newsListFull.length) {
-      this.galleryData.getData()
-        .then(() => {
-          this.news = this.galleryData.getInitialData();
-        });
-    }
-    else {
-      this.news = this.galleryData.getInitialData();
-    }
+    this.gallaryData.loadData()
+      .then((newsList) => {
+        this.allNewsCount = newsList.length;
+        this.store.dispatch(loadNews({news : newsList}));
+        this.getInitialData()
+      });
   }
 
   onKeyBoardPress(event : KeyboardEvent, text : string) : void {
     if (event.keyCode == 13) {
       if (this.searchText !== '') {
         text = text.toLowerCase();
-        let filteredNews = this.galleryData.newsListFull.filter(newItem => newItem.headline.toLowerCase().includes(text) ||  newItem.date.includes(text));
-        this.news = [...filteredNews];
-        this.moreBtnEnable = false;
-        this.searchText = '';
-        this.inputPlaceholder = 'Нажмите Enter для возврата';
+        this.allnews$.pipe(
+          map(news => news.filter((newItem) => newItem.headline.toLowerCase().includes(text) ||  newItem.date.includes(text)))
+        )
+        .subscribe(
+          (filteredNews) => {
+          this.viewNews = filteredNews;
+          this.moreBtnEnable = false;
+          this.searchText = '';
+          this.inputPlaceholder = 'Нажмите Enter для возврата';
+        })
       }
       else {
-        this.news = this.galleryData.getInitialData();
+        this.getInitialData();
         this.moreBtnEnable = true;
         this.inputPlaceholder = 'Нажмите Enter для поиска'
       }
     }
   }
 
-  moreNews(value : number) : void {
-    let additionalNews : New[] = this.galleryData.loadMoreData(value);
-
-    if (additionalNews.length !== 0) {
+  onMoreNewsButtonClick(value : number) : void {
+    this.allnews$.pipe(
+      map(news => news.slice(this.startIndex, this.startIndex+value))
+    )
+    .subscribe((additionalNews) => {
       additionalNews.forEach((newItem) => {
-        this.news.push(newItem);
+        this.viewNews.push(newItem);
       });
-    }
-
-    if (this.news.length === this.galleryData.newsListFull.length) {
-      this.moreBtnEnable = false;
-    }
-    else {
-      this.moreBtnEnable = true;
-    }
+      if (this.viewNews.length === this.allNewsCount) {
+        this.moreBtnEnable = false;
+      }
+      else {
+        this.moreBtnEnable = true;
+      }
+    });
   }
+
+  getInitialData() : void {
+    const countInitialNews = 20;
+    this.allnews$.pipe(
+      map(news => news.slice(0,countInitialNews))
+    )
+    .subscribe((news) => {
+      this.viewNews = news;
+      this.startIndex = countInitialNews;
+    });
+  }
+
 }

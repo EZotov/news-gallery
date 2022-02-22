@@ -1,5 +1,4 @@
 import { Component, Input} from '@angular/core';
-import { New } from '../enteties/new';
 
 @Component(
   {

@@ -8,6 +8,8 @@ import { NewsGalleryService } from './newsgallery/newsgallery.service';
 import { NewItem } from './newItem/newItem.component';
 import { CommentsList } from './comments/comments.component';
 import { FormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+import { newsGalleryReducer } from './store/newsgallery.reducers';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    StoreModule.forRoot({newsGallery : newsGalleryReducer})
   ],
   providers: [NewsGalleryService],
   bootstrap: [AppComponent]
