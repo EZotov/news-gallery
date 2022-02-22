@@ -20,7 +20,7 @@ export class NewsGallery implements OnInit {
   //Properties
   viewNews : New[] = [];
   allnews$ : Observable<New[]> = this.store.select(newsSelector);
-  moreBtnEnable : boolean = true;
+  moreNewsBtnEnable : boolean = true;
   searchText : string = '';
   maxRate : number = 5;
   inputPlaceholder : string = 'Нажмите Enter для поиска';
@@ -37,7 +37,7 @@ export class NewsGallery implements OnInit {
       .then((newsList) => {
         this.allNewsCount = newsList.length;
         this.store.dispatch(loadNews({news : newsList}));
-        this.getInitialData()
+        this.getInitialNews();
       });
   }
 
@@ -51,15 +51,15 @@ export class NewsGallery implements OnInit {
         .subscribe(
           (filteredNews) => {
           this.viewNews = filteredNews;
-          this.moreBtnEnable = false;
+          this.moreNewsBtnEnable = false;
           this.searchText = '';
           this.inputPlaceholder = 'Нажмите Enter для возврата';
         })
       }
       else {
-        this.getInitialData();
-        this.moreBtnEnable = true;
-        this.inputPlaceholder = 'Нажмите Enter для поиска'
+        this.getInitialNews();
+        this.moreNewsBtnEnable = true;
+        this.inputPlaceholder = 'Нажмите Enter для поиска';
       }
     }
   }
@@ -73,15 +73,15 @@ export class NewsGallery implements OnInit {
         this.viewNews.push(newItem);
       });
       if (this.viewNews.length === this.allNewsCount) {
-        this.moreBtnEnable = false;
+        this.moreNewsBtnEnable = false;
       }
       else {
-        this.moreBtnEnable = true;
+        this.moreNewsBtnEnable = true;
       }
     });
   }
 
-  getInitialData() : void {
+  getInitialNews() : void {
     const countInitialNews = 20;
     this.allnews$.pipe(
       map(news => news.slice(0,countInitialNews))
@@ -91,5 +91,4 @@ export class NewsGallery implements OnInit {
       this.startIndex = countInitialNews;
     });
   }
-
 }
