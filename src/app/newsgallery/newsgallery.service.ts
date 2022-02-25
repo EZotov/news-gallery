@@ -2,6 +2,7 @@ import { New } from '../enteties/new';
 import { Comment } from '../enteties/comment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 @Injectable()
@@ -11,8 +12,8 @@ export class NewsGalleryService {
     private http : HttpClient
   ) { }
 
-  loadData() : Promise<New[]> {
-    return new Promise((resolve) => {
+  loadData() : Observable<New[]> {
+    return new Observable((sub) => {
       let newsTempArray : {[k : string] : any};
       let nextId : number;
       let commentsList : Comment[] = [];
@@ -39,7 +40,8 @@ export class NewsGalleryService {
               commentsList = [];
             });
             this.sortData(newsListFull, 'desc');
-            resolve(newsListFull);
+            sub.next(newsListFull);
+            sub.complete();
           }
         );
     });

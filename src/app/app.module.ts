@@ -9,7 +9,9 @@ import { NewItem } from './newItem/newItem.component';
 import { CommentsList } from './comments/comments.component';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 import { newsGalleryReducer } from './store/newsgallery.reducers';
+import { NewsGalleryEffects } from './store/newsgallery.effects';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { newsGalleryReducer } from './store/newsgallery.reducers';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    StoreModule.forRoot({newsGallery : newsGalleryReducer})
+    StoreModule.forRoot({newsGallery : newsGalleryReducer}),
+    EffectsModule.forRoot([NewsGalleryEffects])
   ],
   providers: [NewsGalleryService],
   bootstrap: [AppComponent]

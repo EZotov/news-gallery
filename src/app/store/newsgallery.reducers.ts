@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { loadNews } from './newsgallery.actions';
+import { loadSuccess } from './newsgallery.actions';
 import { New } from '../enteties/new';
 
 export interface newsGalleryState {
@@ -17,7 +17,7 @@ const initialState : newsGalleryState = {
 
 export const newsGalleryReducer = createReducer(
   initialState,
-  on(loadNews, (state, action) => {
+  on(loadSuccess, (state, action) => {
     return {
       news : [...state.news, ...action.news]
     };

@@ -1,11 +1,9 @@
 import { Component, OnInit} from '@angular/core';
 import { New } from '../enteties/new';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'
 import { Store } from '@ngrx/store';
 import { newsSelector } from '../store/newsgallery.selectors';
 import { loadNews } from '../store/newsgallery.actions';
-import { NewsGalleryService } from './newsgallery.service';
 
 
 @Component(
@@ -20,41 +18,33 @@ export class NewsGallery implements OnInit {
   //Properties
   viewNews : New[] = [];
   allnews$ : Observable<New[]> = this.store.select(newsSelector);
+  news : New[] = [];
   moreNewsBtnEnable : boolean = true;
   searchText : string = '';
   maxRate : number = 5;
   inputPlaceholder : string = 'Нажмите Enter для поиска';
   startIndex : number = 0;
-  allNewsCount : number = 0;
 
   constructor(
     private store : Store,
-    private gallaryData : NewsGalleryService
   ) { }
 
   ngOnInit() : void {
-    this.gallaryData.loadData()
-      .then((newsList) => {
-        this.allNewsCount = newsList.length;
-        this.store.dispatch(loadNews({news : newsList}));
-        this.getInitialNews();
-      });
+    this.store.dispatch(loadNews());
+    this.allnews$.subscribe((news) => {
+      this.news = news;
+      this.getInitialNews();
+    });
   }
 
   onKeyBoardPress(event : KeyboardEvent, text : string) : void {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       if (this.searchText !== '') {
         text = text.toLowerCase();
-        this.allnews$.pipe(
-          map(news => news.filter((newItem) => newItem.headline.toLowerCase().includes(text) ||  newItem.date.includes(text)))
-        )
-        .subscribe(
-          (filteredNews) => {
-          this.viewNews = filteredNews;
-          this.moreNewsBtnEnable = false;
-          this.searchText = '';
-          this.inputPlaceholder = 'Нажмите Enter для возврата';
-        })
+        let filteredNews = this.news.filter((newItem) => newItem.headline.toLowerCase().includes(text) || newItem.date.includes(text));
+        this.viewNews = filteredNews;
+        this.searchText = '';
+        this.inputPlaceholder = 'Нажмите Enter для возврата';
       }
       else {
         this.getInitialNews();
@@ -65,30 +55,21 @@ export class NewsGallery implements OnInit {
   }
 
   onMoreNewsButtonClick(value : number) : void {
-    this.allnews$.pipe(
-      map(news => news.slice(this.startIndex, this.startIndex+value))
-    )
-    .subscribe((additionalNews) => {
-      additionalNews.forEach((newItem) => {
-        this.viewNews.push(newItem);
-      });
-      if (this.viewNews.length === this.allNewsCount) {
-        this.moreNewsBtnEnable = false;
-      }
-      else {
-        this.moreNewsBtnEnable = true;
-      }
+    this.news.slice(this.startIndex, this.startIndex + value).forEach((newItem) => {
+      this.viewNews.push(newItem);
     });
+
+    if (this.viewNews.length === this.news.length) {
+      this.moreNewsBtnEnable = false;
+    }
+    else {
+      this.moreNewsBtnEnable = true;
+    }
   }
 
   getInitialNews() : void {
     const countInitialNews = 20;
-    this.allnews$.pipe(
-      map(news => news.slice(0,countInitialNews))
-    )
-    .subscribe((news) => {
-      this.viewNews = news;
-      this.startIndex = countInitialNews;
-    });
+    this.viewNews = this.news.slice(0, countInitialNews);
+    this.startIndex = countInitialNews;
   }
 }
